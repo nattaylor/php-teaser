@@ -15,3 +15,11 @@ Basically create an instance of `Teaser()` then pass it either a URL or a text/t
 - (Obviously) This relies on the source text having some good sentences that summarize it.  Without that, our summary will suck.
 - Based on https://github.com/xiaoxu193/PyTeaser based on http://www.textteaser.com/
 - What would make this a lot better?  Tweaking the scoring, duh!
+
+##TODO##
+- Add synonyms to the headline list
+- Try to do some NLP like:
+  -- Stemming: https://github.com/camspiers/porter-stemmer 
+  -- Morphology: https://github.com/heromantor/phpmorphy
+  -- WordNet: http://www.foxsurfer.com/wordnet/
+

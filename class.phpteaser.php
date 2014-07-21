@@ -212,7 +212,7 @@ class Teaser {
 		$re = '/# Split sentences on whitespace between them.
 		    (?<=                # Begin positive lookbehind.
 		      [.!?]             # Either an end of sentence punct,
-		    | [.!?][\'"]        # or end of sentence punct and quote.
+		    | [.!?][\'"”]        # or end of sentence punct and quote.
 		    )                   # End positive lookbehind.
 		    (?<!                # Begin negative lookbehind.
 		      Mr\.              # Skip either "Mr."
@@ -223,10 +223,11 @@ class Teaser {
 		    | Prof\.            # or "Prof.",
 		    | Sr\.              # or "Sr.",
 		    | T\.V\.A\.         # or "T.V.A.",
+		    | [A-Z]\.           # or Middle Initial
 		                        # or... (you get the idea).
 		    )                   # End negative lookbehind.
 		    \s+                 # Split on whitespace between sentences.
-		    /ix';
+		    /x';
 
 		$sentences = preg_split($re, $text, -1, PREG_SPLIT_NO_EMPTY);
 		return $sentences;

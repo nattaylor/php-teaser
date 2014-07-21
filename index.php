@@ -46,6 +46,8 @@ function genHTML($cache) {
 	$html = '';
 	foreach($news['assets'] as $article) {
 		$summary = new Teaser();
+		$article['body']=preg_replace("/>(.*?)\ —\ /", ">", $article['body']);
+		$article['body']=preg_replace("/<\/p>/", "  </p>", $article['body']);
 		$content = $summary->createSummary($article['body'],'text',$article['title']);
 		$html .= '<div class="article">';
 		$html .= '<div class="article-section">'.$article['sectionDisplayName'].'</div>';
