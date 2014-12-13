@@ -1,4 +1,4 @@
-<?php
+<?php namespace PhpTeaser;
 /**
 	* Create a summary from long text blocks
 	*
@@ -258,7 +258,6 @@ class Teaser {
 				$score+=1.0;
 			}
 		}
-		//var_dump($score/count($title));
 		return $score/count($title);
 	}
 
@@ -271,29 +270,17 @@ class Teaser {
 	*/
 	function computeSentencePositionScore($i, $size) {
 		$normalized =  $i*1.0 / $size;
-		if ($normalized > 0 and $normalized <= 0.1) {
-			return 0.17;
-		} elseif($normalized > 0.1 and $normalized <= 0.2) {
-			return 0.23;
-		} elseif($normalized > 0.2 and $normalized <= 0.3) {
-			return 0.14;
-		} elseif($normalized > 0.3 and $normalized <= 0.4) {
-			return 0.08;
-		} elseif($normalized > 0.4 and $normalized <= 0.5) {
-			return 0.05;
-		} elseif($normalized > 0.5 and $normalized <= 0.6) {
-			return 0.04;
-		} elseif($normalized > 0.6 and $normalized <= 0.7) {
-			return 0.06;
-		} elseif($normalized > 0.7 and $normalized <= 0.8) {
-			return 0.04;
-		} elseif($normalized > 0.8 and $normalized <= 0.9) {
-			return 0.04;
-		} elseif($normalized > 0.9 and $normalized <= 1.0) {
-			return 0.15;
-		} else {
-			return 0;
-		}
+        $normalizedBounds = $this->getNormalizedBounds();
+        $score = (float) 0;
+        foreach($normalizedBounds as $bounds){
+            if($score > 0){
+                break;
+            }
+            if($normalized >= $bounds['lower'] && $normalized < $bounds['upper']){
+                $score = $bounds['result'];
+            }
+        }
+        return $score;
 	}
 
 	/** Remove unwanted tags etc from text */
@@ -306,10 +293,24 @@ class Teaser {
 		
 		return $text;
 	}
-}
-//$teaser = new Teaser();
-//$text = "This would seem like child's play though Mr. X when you add the mobile universe to the fray. The two leading app store providers, Apple and Google, have to their credit 700,000 apps each. That is a universe several hundred times the size of traditional, above the line media for each app store. Identifying the exact app to piggyback on to reach out to the consumer is a challenge quite unlike any. And that is only one half of the decision. Inventory on the mobile extends to websites browsed through the device as well.  This should explain why unlike the traditional media, where the media team would typically ink individual contracts with specific channels or publications on behalf of the advertiser, the mobile space needs a partner to break through this universe in a way. Enter the mobile ad networks.  The way the ecosystem works in the mobile space is like this: Aggregators consolidate ad inventory (various apps and space therein as well as the mobile websites) from multiple publishers and offer that to ad networks such as Google's AdMob and Apple's iAds as well as independent networks such as Komli, Vserv, InMobi, Tyroo etc. These networks work like the supply side platforms (SSPs) in the digital advertising space. Advertising and media agencies work with the advertisers to define their mobile campaigns and buy space via these networks to reach out to the consumer. Effectively, these networks act as intermediaries, eliminating the need for advertisers and ad agencies to go directly to publishers or aggregators for buying space.";
-//var_dump($teaser->createSummary($text,"text","mobile networks"));
-//var_dump($teaser->createSummary("http://www.businessinsider.com/apples-acquisition-of-primesense-may-be-for-tv-2013-11","url"));
 
-//var_dump($teaser->createSummary("http://www.business2community.com/cloud-computing/confused-saas-paas-iaas-0687173","url"));
+    /**
+     * @return array
+     */
+    private function getNormalizedBounds()
+    {
+        $normalizedBounds = [
+            ['lower' => 0, 'upper' => 0.1, 'result' => 0.17],
+            ['lower' => 0.1, 'upper' => 0.2, 'result' => 0.23],
+            ['lower' => 0.2, 'upper' => 0.3, 'result' => 0.14],
+            ['lower' => 0.3, 'upper' => 0.4, 'result' => 0.08],
+            ['lower' => 0.4, 'upper' => 0.5, 'result' => 0.05],
+            ['lower' => 0.5, 'upper' => 0.6, 'result' => 0.04],
+            ['lower' => 0.6, 'upper' => 0.7, 'result' => 0.06],
+            ['lower' => 0.7, 'upper' => 0.8, 'result' => 0.04],
+            ['lower' => 0.8, 'upper' => 0.9, 'result' => 0.04],
+            ['lower' => 0.9, 'upper' => 1.0, 'result' => 0.15]
+        ];
+        return $normalizedBounds;
+    }
+}
