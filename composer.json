@@ -2,6 +2,10 @@
     "name": "matt/php-teaser",
     "authors": [
         {
+            "name": "Nat",
+            "email": "nat@nattaylor.com"
+        },
+        {
             "name": "Matt",
             "email": "matt@mattcannon.uk"
         }
