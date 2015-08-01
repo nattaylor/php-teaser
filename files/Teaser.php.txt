@@ -1,4 +1,12 @@
-<?php namespace PhpTeaser;
+<?php
+/** 
+* Create a summary from long text blocks.
+* 
+* Based on PyTeaser
+*/
+
+namespace PhpTeaser;
+
 /**
 	* Create a summary from long text blocks
 	*
@@ -9,13 +17,19 @@
 	*
 	*/
 class Teaser {
+	/**
+	* List of common words to ignore
+	*/
 	var $stopWords = array("-", " ", ",", ".", "a", "e", "i", "o", "u", "t", "about", "above", "above", "across", "after", "afterwards", "again", "against", "all", "almost", "alone", "along", "already", "also", "although", "always", "am", "among", "amongst", "amoungst", "amount", "an", "and", "another", "any", "anyhow", "anyone", "anything", "anyway", "anywhere", "are", "around", "as", "at", "back", "be", "became", "because", "become", "becomes", "becoming", "been", "before", "beforehand", "behind", "being", "below", "beside", "besides", "between", "beyond", "both", "bottom", "but", "by", "call", "can", "cannot", "can't", "co", "con", "could", "couldn't", "de", "describe", "detail", "did", "do", "done", "down", "due", "during", "each", "eg", "eight", "either", "eleven", "else", "elsewhere", "empty", "enough", "etc", "even", "ever", "every", "everyone", "everything", "everywhere", "except", "few", "fifteen", "fifty", "fill", "find", "fire", "first", "five", "for", "former", "formerly", "forty", "found", "four", "from", "front", "full", "further", "get", "give", "go", "got", "had", "has", "hasnt", "have", "he", "hence", "her", "here", "hereafter", "hereby", "herein", "hereupon", "hers", "herself", "him", "himself", "his", "how", "however", "hundred", "i", "ie", "if", "in", "inc", "indeed", "into", "is", "it", "its", "it's", "itself", "just", "keep", "last", "latter", "latterly", "least", "less", "like", "ltd", "made", "make", "many", "may", "me", "meanwhile", "might", "mill", "mine", "more", "moreover", "most", "mostly", "move", "much", "must", "my", "myself", "name", "namely", "neither", "never", "nevertheless", "new", "next", "nine", "no", "nobody", "none", "noone", "nor", "not", "nothing", "now", "nowhere", "of", "off", "often", "on", "once", "one", "only", "onto", "or", "other", "others", "otherwise", "our", "ours", "ourselves", "out", "over", "own", "part", "people", "per", "perhaps", "please", "put", "rather", "re", "said", "same", "see", "seem", "seemed", "seeming", "seems", "several", "she", "should", "show", "side", "since", "sincere", "six", "sixty", "so", "some", "somehow", "someone", "something", "sometime", "sometimes", "somewhere", "still", "such", "take", "ten", "than", "that", "the", "their", "them", "themselves", "then", "thence", "there", "thereafter", "thereby", "therefore", "therein", "thereupon", "these", "they", "thickv", "thin", "third", "this", "those", "though", "three", "through", "throughout", "thru", "thus", "to", "together", "too", "top", "toward", "towards", "twelve", "twenty", "two", "un", "under", "until", "up", "upon", "us", "use", "very", "via", "want", "was", "we", "well", "were", "what", "whatever", "when", "whence", "whenever", "where", "whereafter", "whereas", "whereby", "wherein", "whereupon", "wherever", "whether", "which", "while", "whither", "who", "whoever", "whole", "whom", "whose", "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", "the", "reuters", "news", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "mon", "tue", "wed", "thu", "fri", "sat", "sun", "rappler", "rapplercom", "inquirer", "yahoo", "home", "sports", "1", "10", "2012", "sa", "says", "tweet", "pm", "home", "homepage", "sports", "section", "newsinfo", "stories", "story", "photo", "2013", "na", "ng", "ang", "year", "years", "percent", "ko", "ako", "yung", "yun", "2", "3", "4", "5", "6", "7", "8", "9", "0", "time", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december", "philippine", "government", "police", "manila");
+	
+	/**
+	* Magic number representing a "good" sentence length.
+	*/
 	var $ideal = 20.0;
 
 	/**
 	* Summarize some text, optionally by extracting an article from a URL
-	*
-	* <p>Longer description</p>
+	*namespace PhpTeaser;
 	*
 	* @param String $text Accepts a block or text or a URL
 	* @param String $type The type of text given
@@ -23,7 +37,7 @@ class Teaser {
 	* @param String $title The title (optional)
 	* @return Array The resulting sentences
 	*/
-	function createSummary($text, $type ,$title="", $count = 3) {
+	public function createSummary($text, $type ,$title="", $count = 3) {
 		#Go grab the article from the URL
 		if($type == 'url') {
 			$articleObj = $this->getArticle($text);
@@ -50,8 +64,12 @@ class Teaser {
 		return $summaries;
 	}
 
-	/** Extract article from a page using php-readability */
-	function getArticle($url) {
+	/**
+	* Extract article from a page using php-readability
+	*
+	* @param String $url The URL fo the text to grab
+	*/
+	private function getArticle($url) {
 		require 'class.Readability.php';
 
 		$html = file_get_contents($url);
@@ -74,8 +92,8 @@ class Teaser {
 	* @param Array $titleWords
 	* @param Array $keywords
 	* @return Array Resulting scores for each $sentence
-	*/
-	function computeScore($sentences, $titleWords, $keywords) {
+	*/	
+	private function computeScore($sentences, $titleWords, $keywords) {
 		$senCount = count($sentences);
 		$ranks = array();
 		$count = 0;
@@ -111,7 +129,7 @@ class Teaser {
 	* @param Array $keywords All of the keyword and frequency tuples
 	* @return Int score for the sentence representent by $words
 	*/
-	function sbs($words, $keywords) {
+	private function sbs($words, $keywords) {
 		$score = 0.0;
 		if (count($words) == 0) {
 			return 0;
@@ -125,13 +143,13 @@ class Teaser {
 	}
 
 	/**
-	* Score a sentence based on its proximity to other keywords
+	* Score a sentence based on its proximity to other keywords (d as in distance)
 	*
 	* @param Array $words All the words in the sentence
 	* @param Array $keywords All of the keyword and frequency tuples
 	* @return Int score for the sentence representent by $words
 	*/
-	function dbs($words, $keywords) {
+	private function dbs($words, $keywords) {
 		$score = 0.0;
 		$first = array();
 		$second = array();
@@ -163,7 +181,7 @@ class Teaser {
 	* @param String $text The Text to split
 	* @return Array The resulting word list
 	*/
-	function splitWords($text) {
+	private function splitWords($text) {
 		return preg_split('/((^\p{P}+)|(\p{P}*\s+\p{P}*)|(\p{P}+$))/', $text, -1, PREG_SPLIT_NO_EMPTY);
 	}
 
@@ -173,7 +191,7 @@ class Teaser {
 	* @param String $text Text source from which to compute keywords
 	* @return Array Scored keywords where each item is array('keyword',score)
 	*/
-	function computeKeywords($text) {
+	private function computeKeywords($text) {
 		$text = $this->splitWords($text);
 		$numWords = count($text);
 		//Remove stop words
@@ -208,7 +226,7 @@ class Teaser {
 	* @param String $text Text to split
 	* @return Array Sentences
 	*/
-	function splitSentences($text) {
+	private function splitSentences($text) {
 		$re = '/# Split sentences on whitespace between them.
 		    (?<=                # Begin positive lookbehind.
 		      [.!?]             # Either an end of sentence punct,
@@ -239,7 +257,7 @@ class Teaser {
 	* @param Array $sentence
 	* @return Int score
 	*/
-	function computeLengthScore($sentence) {
+	private function computeLengthScore($sentence) {
 		return 1 - abs($this->ideal - count($sentence)) / $this->ideal;
 	}
 
@@ -250,7 +268,7 @@ class Teaser {
 	* @param String $title
 	* @return Int score
 	*/
-	function computeTitleScore($title, $sentence) {
+	private function computeTitleScore($title, $sentence) {
 		$title = array_diff($title,$this->stopWords);
 		$score = 0.0;
 		foreach($sentence as $word) {
@@ -268,7 +286,7 @@ class Teaser {
 	* @param Int $size Length of sentence
 	* @return Float sentence position score
 	*/
-	function computeSentencePositionScore($i, $size) {
+	private function computeSentencePositionScore($i, $size) {
 		$normalized =  $i*1.0 / $size;
         $normalizedBounds = $this->getNormalizedBounds();
         $score = (float) 0;
@@ -284,7 +302,7 @@ class Teaser {
 	}
 
 	/** Remove unwanted tags etc from text */
-	function cleanText($text) {
+	private function cleanText($text) {
 		$text = preg_replace('#(<script).*?(</script>)#si','',$text);
 		$text = preg_replace('#(<style).*?(</style>)#si','',$text);
 		$text = preg_replace('~>\s+<~', '><', $text);
@@ -295,6 +313,8 @@ class Teaser {
 	}
 
     /**
+     * Translate sentence positions into scores
+     *
      * @return array
      */
     private function getNormalizedBounds()
@@ -314,3 +334,4 @@ class Teaser {
         return $normalizedBounds;
     }
 }
+
