@@ -1,0 +1,15 @@
+{
+    "name": "matt/php-teaser",
+    "authors": [
+        {
+            "name": "Matt",
+            "email": "matt@mattcannon.uk"
+        }
+    ],
+    "autoload":{
+        "psr-4":{
+            "PhpTeaser\\":"src/PhpTeaser"
+        }
+    },
+    "require": {}
+}
